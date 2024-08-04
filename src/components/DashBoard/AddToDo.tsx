@@ -27,7 +27,7 @@ const AddToDo: React.FC<Props> = () => {
     })
       .then((res) => res.json())
       .then(() => {
-        toast.success("To-do added successfully");
+        toast.success("Post added successfully");
         e.target.reset();
       })
       .catch((err) => {
@@ -39,16 +39,35 @@ const AddToDo: React.FC<Props> = () => {
       <form onSubmit={handleSubmit} className="py-4 flex flex-col items-center">
         <input
           type="text"
-          placeholder="Task Name"
-          name="name"
+          placeholder="Post Title"
+          name="postName"
           className="input input-bordered w-full max-w-lg mb-4"
         />
         <textarea
           //   type="text"
-          placeholder="Task Description"
+          placeholder="Post Description"
           name="description"
           className="input input-bordered w-full max-w-lg mb-4"
         />
+
+        <select name="category" className="input input-bordered w-full max-w-lg mb-4">
+          <option value="Category1">Device</option>
+          <option value="Category2">House</option>
+          <option value="Category3">Notes/Books</option>
+        </select>
+
+        <input
+          type="date"
+          name="date"
+          className="input input-bordered w-full max-w-lg mb-4"
+        />
+
+        <input
+          type="text"
+          placeholder="Tags (comma separated)"
+          name="tags"
+          className="input input-bordered w-full max-w-lg mb-4"
+        />      
 
         <input
           type="submit"

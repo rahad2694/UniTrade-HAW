@@ -47,17 +47,17 @@ const DashBoard: React.FC<Props> = () => {
   return (
     <div>
       <h1 className="text-purple-500 text-2xl font-bold my-2">
-        Your Dashboard
+        Your Timeline
       </h1>
       <label htmlFor="add-to-do-modal" className="btn modal-button my-5">
-        Add new To-do
+        @Posts
       </label>
       <AddTodoModal></AddTodoModal>
       <div className="my-3 mx-4">
         <div>
           {allIetms.length === 0 ? (
             <h1 className="text-red-500 font-bold my-3">
-              No To-do added by you yet
+              No Post added by you yet
             </h1>
           ) : (
             <h1 className="text-green-500 font-bold my-3">
@@ -69,8 +69,8 @@ const DashBoard: React.FC<Props> = () => {
               <thead>
                 <tr>
                   <th className="hidden md:table-cell"></th>
-                  <th>Task Name</th>
-                  <th>Task Description</th>
+                  <th>Post Title</th>
+                  <th>Post Description</th>
                   <th>Action</th>
                   <th></th>
                 </tr>
