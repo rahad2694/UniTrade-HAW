@@ -20,10 +20,9 @@ const DashBoard: React.FC<Props> = () => {
         email: `${user?.email}`,
       };
       try {
-        const response = await axios.get(
-          `https://simple-to-do-app-server.herokuapp.com/todolist`,
-          { headers: headers }
-        );
+        const response = await axios.get(`http://localhost:8080/leads/leads`, {
+          headers: headers,
+        });
         setAllItems(response.data);
       } catch (error) {
         const axiosError = error as AxiosError;
@@ -46,18 +45,16 @@ const DashBoard: React.FC<Props> = () => {
 
   return (
     <div>
-      <h1 className="text-purple-500 text-2xl font-bold my-2">
-        Your Dashboard
-      </h1>
+      <h1 className="text-purple-500 text-2xl font-bold my-2">Your Timeline</h1>
       <label htmlFor="add-to-do-modal" className="btn modal-button my-5">
-        Add new To-do
+        Add New Post
       </label>
       <AddTodoModal></AddTodoModal>
       <div className="my-3 mx-4">
         <div>
           {allIetms.length === 0 ? (
             <h1 className="text-red-500 font-bold my-3">
-              No To-do added by you yet
+              No Post added by you yet
             </h1>
           ) : (
             <h1 className="text-green-500 font-bold my-3">
@@ -69,8 +66,8 @@ const DashBoard: React.FC<Props> = () => {
               <thead>
                 <tr>
                   <th className="hidden md:table-cell"></th>
-                  <th>Task Name</th>
-                  <th>Task Description</th>
+                  <th>Post Title</th>
+                  <th>Post Description</th>
                   <th>Action</th>
                   <th></th>
                 </tr>

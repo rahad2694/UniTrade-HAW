@@ -17,7 +17,7 @@ const AddTodoModal: React.FC<Props> = () => {
           >
             ✕
           </label>
-          <h3 className="text-lg font-bold">Want to Add New To-Do?</h3>
+          <h3 className="text-lg font-bold">Do you want to post something?</h3>
           <AddToDo></AddToDo>
         </div>
       </div>
