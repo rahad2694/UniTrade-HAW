@@ -1,15 +1,14 @@
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React from "react";
 import toast from "react-hot-toast";
 
 interface Item {
-  taskName: string;
-  taskDescription: string;
-  email: string;
-  _id: string;
-  completed: boolean;
+  leadTitle: string;
+  content: string;
+  userMatriculation: number;
+  id: string;
 }
 interface Props {
   item: Item;
@@ -17,7 +16,7 @@ interface Props {
 }
 
 const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
-  const { taskName, taskDescription, email, _id, completed } = item;
+  const { leadTitle, content, userMatriculation, id } = item;
 
   const handleDelete = (id: string) => {
     const proceed = window.confirm("Are you sure to delete?");
@@ -37,27 +36,26 @@ const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
   };
   const updateItemToDB = async (updatedItem: Item) => {
     try {
-      const id = _id;
+      //   const id = id;
       const response = await axios.put(
         `https://simple-to-do-app-server.herokuapp.com/updateinfo/${id}`,
         updatedItem
       );
       if (response.status === 200) {
-        toast.success("Marked As Completed", { id: "Success" });
+        toast.success("Lead Update Successful", { id: "Success" });
       }
     } catch (error) {
       // @ts-expect-error need to adjust
       error && toast.error(error.message, { id: "update-error" });
     }
   };
-  const handleStrikeThrough = (id: string) => {
-    const _id = id;
+  const handleUpdateLead = (id: string) => {
+    // const id = id;
     const updatedItem = {
-      _id,
-      taskName,
-      taskDescription,
-      email,
-      completed: true,
+      id,
+      leadTitle,
+      content,
+      userMatriculation,
     };
     updateItemToDB(updatedItem);
   };
@@ -65,35 +63,39 @@ const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
   return (
     <tr>
       <th className="hidden md:table-cell">{index + 1}</th>
-      <td>{completed ? <s>{taskName}</s> : <p>{taskName}</p>}</td>
-      <td>{completed ? <s>{taskDescription}</s> : <p>{taskDescription}</p>}</td>
+      <td>
+        <p>{leadTitle}</p>
+      </td>
+      <td>
+        <p>{content}</p>
+      </td>
       <td>
         <button
-          disabled={completed}
-          onClick={() => handleStrikeThrough(_id)}
-          className="btn text-white hidden md:block"
+          //   disabled={true}
+          onClick={() => handleUpdateLead(id)}
+          className="btn bg-blue-500 text-white hidden md:block"
         >
-          Mark Complete
+          Edit
         </button>
         <button
-          disabled={completed}
-          title="Mark Complete?"
-          onClick={() => handleStrikeThrough(_id)}
-          className="btn text-white md:hidden"
+          //   disabled={true}
+          title="Edit?"
+          onClick={() => handleUpdateLead(id)}
+          className="btn text-white bg-blue-500 md:hidden"
         >
-          <FontAwesomeIcon icon={faCheck} />
+          <FontAwesomeIcon icon={faPen} />
         </button>
       </td>
       <td>
         <button
-          onClick={() => handleDelete(_id)}
-          className="btn bg-blue-500 text-white hidden md:block"
+          onClick={() => handleDelete(id)}
+          className="btn bg-red-500 text-white hidden md:block"
         >
           Delete
         </button>
         <button
-          onClick={() => handleDelete(_id)}
-          className="btn bg-blue-500 text-white md:hidden"
+          onClick={() => handleDelete(id)}
+          className="btn bg-red-500 text-white md:hidden"
           title="Delete?"
         >
           X

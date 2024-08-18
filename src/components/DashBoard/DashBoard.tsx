@@ -20,10 +20,9 @@ const DashBoard: React.FC<Props> = () => {
         email: `${user?.email}`,
       };
       try {
-        const response = await axios.get(
-          `https://simple-to-do-app-server.herokuapp.com/todolist`,
-          { headers: headers }
-        );
+        const response = await axios.get(`http://localhost:8080/leads/leads`, {
+          headers: headers,
+        });
         setAllItems(response.data);
       } catch (error) {
         const axiosError = error as AxiosError;
@@ -46,11 +45,9 @@ const DashBoard: React.FC<Props> = () => {
 
   return (
     <div>
-      <h1 className="text-purple-500 text-2xl font-bold my-2">
-        Your Timeline
-      </h1>
+      <h1 className="text-purple-500 text-2xl font-bold my-2">Your Timeline</h1>
       <label htmlFor="add-to-do-modal" className="btn modal-button my-5">
-        @Posts
+        Add New Post
       </label>
       <AddTodoModal></AddTodoModal>
       <div className="my-3 mx-4">

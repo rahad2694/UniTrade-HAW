@@ -12,7 +12,7 @@ const Home: React.FC<Props> = () => {
   return (
     <div>
       <h1 className="text-purple-500 text-2xl font-bold my-20">
-        Welcome to your To-Do List Manager
+        Welcome to your UniTrade
       </h1>
       {user?.uid ? (
         <Link className="btn bg-green-500 text-white" to="/dashboard">
