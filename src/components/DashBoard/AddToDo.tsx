@@ -10,13 +10,26 @@ interface Props {
 const AddToDo: React.FC<Props> = () => {
   const [user] = useAuthState(auth);
   // @ts-expect-error Will Handle it
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const taskName = e.target.name.value;
-    const taskDescription = e.target.description.value;
-    const data = { taskName, taskDescription, email: user?.email };
-    console.log(data);
-    const url = `https://simple-to-do-app-server.herokuapp.com/addtodo`;
+    const leadTitle = e.target.postTitle.value;
+    const content = e.target.postDescription.value;
+    const device = e.target.device.value;
+    const createdAt = new Date().toISOString(); 
+    const lastUpdatedAt = createdAt;
+    const userMatriculation = user?.email || "";
+    
+    const data = {
+      leadTitle,
+      content,
+      createdAt,
+      lastUpdatedAt,
+      userMatriculation
+    };
+    const url = `https://your-backend-url.com/leads`;
+    
     fetch(url, {
       method: "POST",
       headers: {
@@ -37,38 +50,21 @@ const AddToDo: React.FC<Props> = () => {
   return (
     <div>
       <form onSubmit={handleSubmit} className="py-4 flex flex-col items-center">
+        // Lead Title
         <input
           type="text"
           placeholder="Post Title"
-          name="postName"
+          name="postTitle"
           className="input input-bordered w-full max-w-lg mb-4"
         />
+        
         <textarea
-          //   type="text"
           placeholder="Post Description"
-          name="description"
+          name="postDescription"
           className="input input-bordered w-full max-w-lg mb-4"
         />
 
-        <select name="category" className="input input-bordered w-full max-w-lg mb-4">
-          <option value="Category1">Device</option>
-          <option value="Category2">House</option>
-          <option value="Category3">Notes/Books</option>
-        </select>
-
-        <input
-          type="date"
-          name="date"
-          className="input input-bordered w-full max-w-lg mb-4"
-        />
-
-        <input
-          type="text"
-          placeholder="Tags (comma separated)"
-          name="tags"
-          className="input input-bordered w-full max-w-lg mb-4"
-        />      
-
+        
         <input
           type="submit"
           value="Add"
