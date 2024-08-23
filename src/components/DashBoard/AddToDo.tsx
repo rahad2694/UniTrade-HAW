@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
 import auth from "../../firebase.init";
@@ -9,27 +9,44 @@ interface Props {
 
 const AddToDo: React.FC<Props> = () => {
   const [user] = useAuthState(auth);
-  // @ts-expect-error Will Handle it
+  const [userMatriculation, setUserMatriculation] = useState(0);
 
+  useEffect(() => {
+    const url = `http://localhost:8080/user/email/${user?.email}`;
 
-  const handleSubmit = (e) => {
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `${user?.email} ${localStorage.getItem("accessToken")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setUserMatriculation(res.matriculation);
+        // toast.success("Matriculation got successfully");
+      })
+      .catch((err) => {
+        toast.error(err.message, { id: "adding-error" });
+      });
+  }, [user?.email]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const leadTitle = e.target.postTitle.value;
-    const content = e.target.postDescription.value;
-    const device = e.target.device.value;
-    const createdAt = new Date().toISOString(); 
+    const leadTitle = e.currentTarget.postTitle.value;
+    const content = e.currentTarget.postDescription.value;
+    const createdAt = new Date().toISOString();
     const lastUpdatedAt = createdAt;
-    const userMatriculation = user?.email || "";
-    
+
     const data = {
       leadTitle,
       content,
       createdAt,
       lastUpdatedAt,
-      userMatriculation
+      userMatriculation,
     };
-    const url = `https://your-backend-url.com/leads`;
-    
+    const url = `http://localhost:8080/leads/create-lead`;
+
     fetch(url, {
       method: "POST",
       headers: {
@@ -41,7 +58,7 @@ const AddToDo: React.FC<Props> = () => {
       .then((res) => res.json())
       .then(() => {
         toast.success("Post added successfully");
-        e.target.reset();
+        // e.currentTarget.reset();
       })
       .catch((err) => {
         toast.error(err.message, { id: "adding-error" });
@@ -50,25 +67,21 @@ const AddToDo: React.FC<Props> = () => {
   return (
     <div>
       <form onSubmit={handleSubmit} className="py-4 flex flex-col items-center">
-        // Lead Title
         <input
           type="text"
           placeholder="Post Title"
           name="postTitle"
           className="input input-bordered w-full max-w-lg mb-4"
         />
-        
         <textarea
           placeholder="Post Description"
           name="postDescription"
           className="input input-bordered w-full max-w-lg mb-4"
         />
-
-        
         <input
           type="submit"
           value="Add"
-          className="btn btn-active input input-bordered w-full max-w-lg"
+          className="btn btn-active input input-bordered w-full max-w-lg hover:bg-red-500"
         />
       </form>
     </div>

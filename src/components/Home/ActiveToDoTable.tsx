@@ -1,13 +1,14 @@
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
+import auth from "../../firebase.init";
 
 interface Item {
   leadTitle: string;
   content: string;
-  userMatriculation: number;
   id: string;
 }
 interface Props {
@@ -16,19 +17,49 @@ interface Props {
 }
 
 const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
-  const { leadTitle, content, userMatriculation, id } = item;
+  const [user] = useAuthState(auth);
+  const { leadTitle, content, id } = item;
+
+  const [userMatriculation, setUserMatriculation] = useState(0);
+
+  useEffect(() => {
+    const url = `http://localhost:8080/user/email/${user?.email}`;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `${user?.email} ${localStorage.getItem("accessToken")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setUserMatriculation(res.matriculation);
+        // toast.success("Matriculation got successfully");
+      })
+      .catch((err) => {
+        toast.error(err.message, { id: "adding-error" });
+      });
+  }, [user?.email]);
 
   const handleDelete = (id: string) => {
     const proceed = window.confirm("Are you sure to delete?");
     if (proceed) {
       axios
-        .delete(`https://simple-to-do-app-server.herokuapp.com/ietm/${id}`)
+        .delete(`http://localhost:8080/leads/delete/${userMatriculation}/${id}`)
         .then((response) => {
-          console.log(response);
-          toast.success("Successfully Deleted", { id: "deleted" });
+          toast.success("Successfully Deleted " + response.statusText, {
+            id: "deleted",
+          });
         })
         .catch((error) => {
-          toast.error(error.message, { id: "delete-error" });
+          if (error.response.status === 403) {
+            toast.error("You Can't delete this Post", {
+              id: "delete-access-error",
+            });
+          } else {
+            toast.error(error.message, { id: "delete-error" });
+          }
         });
     } else {
       toast.success("Attempt Terminated", { id: "delete-cancel" });

@@ -11,7 +11,7 @@ interface Props {
 }
 
 const DashBoard: React.FC<Props> = () => {
-  const [allIetms, setAllItems] = useState([]);
+  const [allItems, setAllItems] = useState([]);
   const [user] = useAuthState(auth);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const DashBoard: React.FC<Props> = () => {
       }
     }
     getItems();
-  }, [allIetms, user]);
+  }, [allItems, user]);
 
   return (
     <div>
@@ -52,14 +52,12 @@ const DashBoard: React.FC<Props> = () => {
       <AddTodoModal></AddTodoModal>
       <div className="my-3 mx-4">
         <div>
-          {allIetms.length === 0 ? (
+          {allItems.length === 0 ? (
             <h1 className="text-red-500 font-bold my-3">
               No Post added by you yet
             </h1>
           ) : (
-            <h1 className="text-green-500 font-bold my-3">
-              Your Current To-do List
-            </h1>
+            <h1 className="text-green-500 font-bold my-3">Your Posts</h1>
           )}
           <div className="overflow-x-auto">
             <table className="table mx-auto w-1/4 md:w-2/4 lg:w-11/12 text-center">
@@ -73,11 +71,11 @@ const DashBoard: React.FC<Props> = () => {
                 </tr>
               </thead>
               <tbody>
-                {allIetms.map((item, index) => (
+                {allItems.map((item, index) => (
                   <ActiveToDoTable
                     index={index}
                     // @ts-expect-error needed to ADJUST
-                    key={item._id}
+                    key={item.id}
                     item={item}
                   ></ActiveToDoTable>
                 ))}
