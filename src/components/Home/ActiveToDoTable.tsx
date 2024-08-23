@@ -92,7 +92,7 @@ const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
   };
 
   return (
-    <tr>
+    <tr className="hover:bg-gray-100">
       <th className="hidden md:table-cell">{index + 1}</th>
       <td>
         <p>{leadTitle}</p>
