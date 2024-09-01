@@ -35,7 +35,7 @@ const SignUp: React.FC<Props> = () => {
     if (emailUser || googleUser) {
       const user = emailUser || googleUser;
       console.log(user?.user.displayName);
-      const url = `https://simple-to-do-app-server.herokuapp.com/login`;
+      const url = `https://unitrade-hawserver-production.up.railway.app/login`;
       fetch(url, {
         method: "POST",
         headers: {

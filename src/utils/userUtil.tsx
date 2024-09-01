@@ -7,9 +7,12 @@ export const getMatriculationByEmail = async (
     email: `${email}`,
   };
   try {
-    const response = await axios.get(`http://localhost:8080/user/${email}`, {
-      headers: headers,
-    });
+    const response = await axios.get(
+      `https://unitrade-hawserver-production.up.railway.app/user/${email}`,
+      {
+        headers: headers,
+      }
+    );
     return response.data;
   } catch (error) {
     return 0;

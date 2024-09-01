@@ -12,7 +12,7 @@ const AddToDo: React.FC<Props> = () => {
   const [userMatriculation, setUserMatriculation] = useState(0);
 
   useEffect(() => {
-    const url = `http://localhost:8080/user/email/${user?.email}`;
+    const url = `https://unitrade-hawserver-production.up.railway.app/user/email/${user?.email}`;
 
     fetch(url, {
       method: "GET",
@@ -45,7 +45,7 @@ const AddToDo: React.FC<Props> = () => {
       lastUpdatedAt,
       userMatriculation,
     };
-    const url = `http://localhost:8080/leads/create-lead`;
+    const url = `https://unitrade-hawserver-production.up.railway.app/leads/create-lead`;
 
     fetch(url, {
       method: "POST",

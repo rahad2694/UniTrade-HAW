@@ -20,9 +20,12 @@ const DashBoard: React.FC<Props> = () => {
         email: `${user?.email}`,
       };
       try {
-        const response = await axios.get(`http://localhost:8080/leads/leads`, {
-          headers: headers,
-        });
+        const response = await axios.get(
+          `https://unitrade-hawserver-production.up.railway.app/leads/leads`,
+          {
+            headers: headers,
+          }
+        );
         setAllItems(response.data);
       } catch (error) {
         const axiosError = error as AxiosError;

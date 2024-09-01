@@ -23,7 +23,7 @@ const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
   const [userMatriculation, setUserMatriculation] = useState(0);
 
   useEffect(() => {
-    const url = `http://localhost:8080/user/email/${user?.email}`;
+    const url = `https://unitrade-hawserver-production.up.railway.app/user/email/${user?.email}`;
 
     fetch(url, {
       method: "GET",
@@ -46,7 +46,9 @@ const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
     const proceed = window.confirm("Are you sure to delete?");
     if (proceed) {
       axios
-        .delete(`http://localhost:8080/leads/delete/${userMatriculation}/${id}`)
+        .delete(
+          `https://unitrade-hawserver-production.up.railway.app/leads/delete/${userMatriculation}/${id}`
+        )
         .then((response) => {
           toast.success("Successfully Deleted " + response.statusText, {
             id: "deleted",
@@ -69,7 +71,7 @@ const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
     try {
       //   const id = id;
       const response = await axios.put(
-        `https://simple-to-do-app-server.herokuapp.com/updateinfo/${id}`,
+        `https://unitrade-hawserver-production.up.railway.app/updateinfo/${id}`,
         updatedItem
       );
       if (response.status === 200) {

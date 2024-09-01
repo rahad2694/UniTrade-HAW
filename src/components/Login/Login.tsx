@@ -27,10 +27,12 @@ const Login: React.FC<Props> = () => {
 
   // const [user] = useAuthState(auth);
   useEffect(() => {
+    localStorage.setItem("accessToken", "fau fau");
+
     if (emailUser || googleUser) {
       console.log("I am in");
       const user = emailUser || googleUser;
-      const url = `https://simple-to-do-app-server.herokuapp.com/login`;
+      const url = `https://unitrade-hawserver-production.up.railway.app/login`;
       fetch(url, {
         method: "POST",
         headers: {
