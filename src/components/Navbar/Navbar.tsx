@@ -12,13 +12,27 @@ interface Props {
 const Navbar: React.FC<Props> = () => {
   const [user] = useAuthState(auth);
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 sticky top-0 z-50">
       <div className="flex-1">
         <Link to="/" className="btn btn-ghost normal-case text-xl ml-3">
           UniTrade
         </Link>
       </div>
       <div className="flex-none">
+        <Link
+          className="mx-2 p-3 rounded-lg hover:bg-base-300 transition delay-100 duration-200 ease-in-out"
+          to="/"
+        >
+          Home
+        </Link>
+        {user?.uid ? (
+          <Link
+            className="mx-2 p-3 rounded-lg hover:bg-base-300 transition delay-100 duration-200 ease-in-out"
+            to="/dashboard"
+          >
+            Dashboard
+          </Link>
+        ) : null}
         {user?.uid ? (
           <div className="dropdown dropdown-end mx-6">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">

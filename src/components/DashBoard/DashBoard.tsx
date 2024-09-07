@@ -3,21 +3,25 @@ import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
 import auth from "../../firebase.init";
-import ActiveToDoTable from "../Home/ActiveToDoTable";
+// import ActiveToDoTable from "../Home/ActiveToDoTable";
 import AddTodoModal from "./AddTodoModal";
+import { Link } from "react-router-dom";
+import Lead, { Item } from "./Lead";
 
 interface Props {
   prop?: string;
 }
 
 const DashBoard: React.FC<Props> = () => {
-  const [allItems, setAllItems] = useState([]);
+  const [allLeads, setAllLeads] = useState([]);
   const [user] = useAuthState(auth);
 
   useEffect(() => {
     async function getItems() {
       const headers = {
         email: `${user?.email}`,
+        user: "admin",
+        password: 123456,
       };
       try {
         const response = await axios.get(
@@ -26,7 +30,7 @@ const DashBoard: React.FC<Props> = () => {
             headers: headers,
           }
         );
-        setAllItems(response.data);
+        setAllLeads(response.data);
       } catch (error) {
         const axiosError = error as AxiosError;
         if (axiosError.response) {
@@ -44,16 +48,32 @@ const DashBoard: React.FC<Props> = () => {
       }
     }
     getItems();
-  }, [allItems, user]);
+  }, [allLeads, user]);
 
   return (
     <div>
-      <h1 className="text-purple-500 text-2xl font-bold my-2">Your Timeline</h1>
       <label htmlFor="add-to-do-modal" className="btn modal-button my-5">
         Add New Post
       </label>
       <AddTodoModal></AddTodoModal>
-      <div className="my-3 mx-4">
+
+      {allLeads.length === 0 ? (
+        <h1 className="text-red-500 font-bold my-2">
+          No Post found in your Timeline
+        </h1>
+      ) : null}
+      <div className="my-12 mx-12">
+        <div className="p-4 grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-8">
+          {allLeads?.map((lead: Item) => (
+            <Lead key={lead.id} item={lead}></Lead>
+          ))}
+        </div>
+        <Link className="btn mb-5 mt-10 text-white" to="/">
+          Back to Home Page
+        </Link>
+      </div>
+
+      {/* <div className="my-3 mx-4">
         <div>
           {allItems.length === 0 ? (
             <h1 className="text-red-500 font-bold my-3">
@@ -86,7 +106,7 @@ const DashBoard: React.FC<Props> = () => {
             </table>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

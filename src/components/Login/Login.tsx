@@ -40,6 +40,8 @@ const Login: React.FC<Props> = () => {
         },
         body: JSON.stringify({
           email: user?.user.email,
+          // username: "admin",
+          // password: 123456,
         }),
       })
         .then((res) => res.json())
