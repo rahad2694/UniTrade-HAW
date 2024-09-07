@@ -48,7 +48,7 @@ const DashBoard: React.FC<Props> = () => {
       }
     }
     getItems();
-  }, [allLeads, user]);
+  }, [user]);
 
   return (
     <div>

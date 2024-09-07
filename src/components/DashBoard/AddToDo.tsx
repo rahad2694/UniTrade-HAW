@@ -11,7 +11,7 @@ interface Props {
 const AddToDo: React.FC<Props> = () => {
   const [user] = useAuthState(auth);
   const [userMatriculation, setUserMatriculation] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -42,12 +42,14 @@ const AddToDo: React.FC<Props> = () => {
     const createdAt = new Date().toISOString();
     const lastUpdatedAt = createdAt;
 
+    selectedImage && handleImageUpload();
     const data = {
       leadTitle,
       content,
       createdAt,
       lastUpdatedAt,
       userMatriculation,
+      imageUrls: [imageUrl],
     };
     const url = `https://unitrade-hawserver-production.up.railway.app/leads/create-lead`;
 
@@ -68,9 +70,11 @@ const AddToDo: React.FC<Props> = () => {
         toast.error(err.message, { id: "adding-error" });
       });
   };
-  // Handle image selection
-  const handleImageChange = (e) => {
-    setSelectedImage(e.target.files[0]);
+  // Handle image selection in TypeScript
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedImage(e.target.files[0]);
+    }
   };
 
   // Handle image upload
@@ -92,7 +96,7 @@ const AddToDo: React.FC<Props> = () => {
         formData,
         {
           params: {
-            key: "YOUR_IMAGEBB_API_KEY", // Replace with your actual ImageBB API key
+            key: import.meta.env.VITE_imageBbApiKey,
           },
         }
       );
@@ -102,7 +106,7 @@ const AddToDo: React.FC<Props> = () => {
       // Get the image URL from the response
       const url = response.data.data.url;
       setImageUrl(url);
-      alert("Image uploaded successfully!");
+      alert("Image uploaded successfully! " + url);
     } catch (error) {
       setLoading(false);
       console.error("Error uploading image:", error);
@@ -124,12 +128,25 @@ const AddToDo: React.FC<Props> = () => {
           name="postDescription"
           className="input input-bordered w-full max-w-lg mb-4"
         />
+
+        {/* Label for image input */}
+        <label
+          htmlFor="imageInput"
+          className="block mb-2 text-lg font-medium text-gray-700"
+        >
+          Select an Image:
+        </label>
         {/* Image input */}
-        <input type="file" onChange={handleImageChange} accept="image/*" />
+        <input
+          className="input input-bordered w-full max-w-lg mb-4"
+          type="file"
+          onChange={handleImageChange}
+          accept="image/*"
+        />
 
         <input
           type="submit"
-          value="Add"
+          value="Add Post"
           className="btn btn-active input input-bordered w-full max-w-lg hover:bg-red-500"
         />
       </form>
