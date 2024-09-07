@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
 import auth from "../../firebase.init";
-import ActiveToDoTable from "../Home/ActiveToDoTable";
-import AddTodoModal from "./AddTodoModal";
+import ActivePost from "../Home/ActivePost";
+import AddLeadModal from "./AddLeadModal";
 
 interface Props {
   prop?: string;
@@ -52,7 +52,7 @@ const DashBoard: React.FC<Props> = () => {
       <label htmlFor="add-to-do-modal" className="btn modal-button my-5">
         Add New Post
       </label>
-      <AddTodoModal></AddTodoModal>
+      <AddLeadModal></AddLeadModal>
       <div className="my-3 mx-4">
         <div>
           {allItems.length === 0 ? (
@@ -75,12 +75,12 @@ const DashBoard: React.FC<Props> = () => {
               </thead>
               <tbody>
                 {allItems.map((item, index) => (
-                  <ActiveToDoTable
+                  <ActivePost
                     index={index}
                     // @ts-expect-error needed to ADJUST
                     key={item.id}
                     item={item}
-                  ></ActiveToDoTable>
+                  ></ActivePost>
                 ))}
               </tbody>
             </table>

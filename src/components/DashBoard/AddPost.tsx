@@ -7,7 +7,7 @@ interface Props {
   prop?: string;
 }
 
-const AddToDo: React.FC<Props> = () => {
+const AddPost: React.FC<Props> = () => {
   const [user] = useAuthState(auth);
   const [userMatriculation, setUserMatriculation] = useState(0);
 
@@ -88,4 +88,4 @@ const AddToDo: React.FC<Props> = () => {
   );
 };
 
-export default AddToDo;
+export default AddPost;

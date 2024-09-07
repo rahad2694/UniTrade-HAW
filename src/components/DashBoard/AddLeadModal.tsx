@@ -1,11 +1,11 @@
 import React from "react";
-import AddToDo from "./AddToDo";
+import AddPost from "./AddPost";
 
 interface Props {
   prop?: string;
 }
 
-const AddTodoModal: React.FC<Props> = () => {
+const AddLeadModal: React.FC<Props> = () => {
   return (
     <div>
       <input type="checkbox" id="add-to-do-modal" className="modal-toggle" />
@@ -18,11 +18,11 @@ const AddTodoModal: React.FC<Props> = () => {
             ✕
           </label>
           <h3 className="text-lg font-bold">Do you want to post something?</h3>
-          <AddToDo></AddToDo>
+          <AddPost></AddPost>
         </div>
       </div>
     </div>
   );
 };
 
-export default AddTodoModal;
+export default AddLeadModal;
