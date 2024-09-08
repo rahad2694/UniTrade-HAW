@@ -8,6 +8,7 @@ import NotFound from "./components/NotFound/NotFound";
 import RequireAuth from "./components/Login/RequireAuth";
 import DashBoard from "./components/DashBoard/DashBoard";
 import Home from "./components/Home/Home";
+import Profile from "./components/Profile/Profile";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Home></Home>}></Route>
         <Route path="/login" element={<Login></Login>}></Route>
         <Route path="/signup" element={<SignUp></SignUp>}></Route>
+        <Route path="/profile" element={<Profile></Profile>}></Route>
         <Route
           path="/dashboard"
           element={
