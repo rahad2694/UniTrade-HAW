@@ -35,7 +35,7 @@ const SignUp: React.FC<Props> = () => {
     if (emailUser || googleUser) {
       const user = emailUser || googleUser;
       console.log(user?.user.displayName);
-      const url = `https://unitrade-hawserver-production.up.railway.app/login`;
+      const url = `https://unitrade-hawserver-production.up.railway.app/user/addUser`;
       fetch(url, {
         method: "POST",
         headers: {
@@ -43,6 +43,7 @@ const SignUp: React.FC<Props> = () => {
         },
         body: JSON.stringify({
           email: user?.user.email,
+          matriculation: Math.round(Math.random() * 1000000),
         }),
       })
         .then((res) => res.json())

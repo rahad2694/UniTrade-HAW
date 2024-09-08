@@ -1,29 +1,26 @@
-// import React from 'react';
 import { useAuthState } from "react-firebase-hooks/auth";
-// import { Link } from "react-router-dom";
 import auth from "../../firebase.init";
-// import UseGetUser from '../../hooks/UseGetUser';
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-// import { useAuthState } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
-// import auth from "../../firebase.init";
 
 export interface Item {
   leadTitle: string;
   content: string;
   id: string;
+  imageUrls: string[];
 }
 interface Props {
   item: Item;
+  handleRefetch: () => void;
 }
 
-const Lead: React.FC<Props> = ({ item }) => {
+const Lead: React.FC<Props> = ({ item, handleRefetch }) => {
   const [user] = useAuthState(auth);
-  const { leadTitle, content, id } = item;
+  const { leadTitle, content, id, imageUrls } = item;
 
   const [userMatriculation, setUserMatriculation] = useState(0);
 
@@ -40,7 +37,6 @@ const Lead: React.FC<Props> = ({ item }) => {
       .then((res) => res.json())
       .then((res) => {
         setUserMatriculation(res.matriculation);
-        // toast.success("Matriculation got successfully");
       })
       .catch((err) => {
         toast.error(err.message, { id: "adding-error" });
@@ -58,6 +54,7 @@ const Lead: React.FC<Props> = ({ item }) => {
           toast.success("Successfully Deleted " + response.statusText, {
             id: "deleted",
           });
+          handleRefetch();
         })
         .catch((error) => {
           if (error.response.status === 403) {
@@ -94,12 +91,14 @@ const Lead: React.FC<Props> = ({ item }) => {
       leadTitle,
       content,
       userMatriculation,
+      imageUrls,
     };
     updateItemToDB(updatedItem);
   };
 
   const noImageSrc = "https://i.ibb.co/ZMYzS6R/no-image.jpg";
-  const img = noImageSrc;
+  const img =
+    imageUrls?.length && imageUrls[0] != "" ? imageUrls[0] : noImageSrc;
   return (
     <div className="flex justify-center ">
       <div className="rounded-lg shadow-lg bg-white max-w-sm lg:hover:scale-110 transition ease-in-out delay-300 hover:shadow-xl">
@@ -112,28 +111,13 @@ const Lead: React.FC<Props> = ({ item }) => {
             {content ?? "No Description"}
           </p>
           <div className="flex justify-center align-middle">
-            {/* <button
-              //   disabled={true}
-              onClick={() => handleUpdateLead(id)}
-              className="btn bg-blue-500 text-white hidden md:block"
-            >
-              Edit
-            </button> */}
             <button
-              //   disabled={true}
               title="Edit?"
               onClick={() => handleUpdateLead(id)}
               className="btn text-white bg-blue-500"
             >
               <FontAwesomeIcon icon={faPen} />
             </button>
-
-            {/* <button
-              onClick={() => handleDelete(id)}
-              className="btn bg-red-500 text-white hidden md:block ml-2 py-1 px-2"
-            >
-              Delete
-            </button> */}
             <button
               onClick={() => handleDelete(id)}
               className="btn bg-red-500 text-white ml-2"

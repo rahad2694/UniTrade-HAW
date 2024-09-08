@@ -3,16 +3,18 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
 import auth from "../../firebase.init";
 import axios from "axios";
+import Spinners from "../Spinners/Spinners";
 
 interface Props {
   prop?: string;
+  handleClose: () => void;
+  handleRefetch: () => void;
 }
 
-const AddToDo: React.FC<Props> = () => {
+const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch }) => {
   const [user] = useAuthState(auth);
   const [userMatriculation, setUserMatriculation] = useState(0);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -28,21 +30,20 @@ const AddToDo: React.FC<Props> = () => {
       .then((res) => res.json())
       .then((res) => {
         setUserMatriculation(res.matriculation);
-        // toast.success("Matriculation got successfully");
       })
       .catch((err) => {
-        toast.error(err.message, { id: "adding-error" });
+        toast.error(err.message + "na na an", { id: "adding-error" });
       });
   }, [user?.email]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const leadTitle = e.currentTarget.postTitle.value;
     const content = e.currentTarget.postDescription.value;
     const createdAt = new Date().toISOString();
     const lastUpdatedAt = createdAt;
 
-    selectedImage && handleImageUpload();
+    const imageUrl = await handleImageUpload();
     const data = {
       leadTitle,
       content,
@@ -53,7 +54,7 @@ const AddToDo: React.FC<Props> = () => {
     };
     const url = `https://unitrade-hawserver-production.up.railway.app/leads/create-lead`;
 
-    fetch(url, {
+    await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,13 +65,15 @@ const AddToDo: React.FC<Props> = () => {
       .then((res) => res.json())
       .then(() => {
         toast.success("Post added successfully");
-        // e.currentTarget.reset();
+        handleRefetch();
+        handleClose();
       })
       .catch((err) => {
         toast.error(err.message, { id: "adding-error" });
       });
   };
-  // Handle image selection in TypeScript
+
+  // Handle image selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedImage(e.target.files[0]);
@@ -79,6 +82,7 @@ const AddToDo: React.FC<Props> = () => {
 
   // Handle image upload
   const handleImageUpload = async () => {
+    let url = "";
     if (!selectedImage) {
       alert("Please select an image");
       return;
@@ -100,50 +104,50 @@ const AddToDo: React.FC<Props> = () => {
           },
         }
       );
-
       setLoading(false);
-
-      // Get the image URL from the response
-      const url = response.data.data.url;
-      setImageUrl(url);
-      alert("Image uploaded successfully! " + url);
+      url = response.data.data.url;
     } catch (error) {
       setLoading(false);
       console.error("Error uploading image:", error);
       alert("Failed to upload image");
     }
+    return url;
   };
-  !loading && console.log(imageUrl);
   return (
     <div>
       <form onSubmit={handleSubmit} className="py-4 flex flex-col items-center">
-        <input
-          type="text"
-          placeholder="Post Title"
-          name="postTitle"
-          className="input input-bordered w-full max-w-lg mb-4"
-        />
-        <textarea
-          placeholder="Post Description"
-          name="postDescription"
-          className="input input-bordered w-full max-w-lg mb-4"
-        />
+        {!loading ? (
+          <>
+            <input
+              type="text"
+              placeholder="Post Title"
+              name="postTitle"
+              className="input input-bordered w-full max-w-lg mb-4"
+            />
+            <textarea
+              placeholder="Post Description"
+              name="postDescription"
+              className="input input-bordered w-full max-w-lg mb-4"
+            />
 
-        {/* Label for image input */}
-        <label
-          htmlFor="imageInput"
-          className="block mb-2 text-lg font-medium text-gray-700"
-        >
-          Select an Image:
-        </label>
-        {/* Image input */}
-        <input
-          className="input input-bordered w-full max-w-lg mb-4"
-          type="file"
-          onChange={handleImageChange}
-          accept="image/*"
-        />
-
+            {/* Label for image input */}
+            <label
+              htmlFor="imageInput"
+              className="block mb-2 text-lg font-medium text-gray-700"
+            >
+              Select an Image:
+            </label>
+            {/* Image input */}
+            <input
+              className="input input-bordered w-full max-w-lg mb-4"
+              type="file"
+              onChange={handleImageChange}
+              accept="image/*"
+            />
+          </>
+        ) : (
+          <Spinners></Spinners>
+        )}
         <input
           type="submit"
           value="Add Post"

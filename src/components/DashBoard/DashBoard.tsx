@@ -15,6 +15,8 @@ interface Props {
 const DashBoard: React.FC<Props> = () => {
   const [allLeads, setAllLeads] = useState([]);
   const [user] = useAuthState(auth);
+  const [showModal, setShowModal] = useState(false);
+  const [refetch, setRefetch] = useState(false);
 
   useEffect(() => {
     async function getItems() {
@@ -48,14 +50,26 @@ const DashBoard: React.FC<Props> = () => {
       }
     }
     getItems();
-  }, [user]);
+  }, [user, refetch]);
+
+  const handleRefetch = () => {
+    setRefetch(!refetch);
+  };
 
   return (
     <div>
-      <label htmlFor="add-to-do-modal" className="btn modal-button my-5">
+      <label
+        onClick={() => setShowModal(true)}
+        htmlFor="add-to-do-modal"
+        className="btn modal-button my-5"
+      >
         Add New Post
       </label>
-      <AddTodoModal></AddTodoModal>
+      <AddTodoModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        handleRefetch={handleRefetch}
+      ></AddTodoModal>
 
       {allLeads.length === 0 ? (
         <h1 className="text-red-500 font-bold my-2">
@@ -65,7 +79,11 @@ const DashBoard: React.FC<Props> = () => {
       <div className="my-12 mx-12">
         <div className="p-4 grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-8">
           {allLeads?.map((lead: Item) => (
-            <Lead key={lead.id} item={lead}></Lead>
+            <Lead
+              key={lead.id}
+              item={lead}
+              handleRefetch={handleRefetch}
+            ></Lead>
           ))}
         </div>
         <Link className="btn mb-5 mt-10 text-white" to="/">
