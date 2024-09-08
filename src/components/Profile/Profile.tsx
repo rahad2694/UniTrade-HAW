@@ -1,35 +1,34 @@
-// src/components/Profile/Profile.tsx
-import React, { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import React, {useEffect, useState} from "react";
+import {useAuthState} from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 interface UserProfile {
     _id: string;
-    matriculation: number;
-    firstName: string;
-    lastName: string;
-    dob: Date;
+    matriculation?: number | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    dob?: Date | null;
     email: string;
-    password: string;
-    role: string[];
-    createdAt: Date;
-    lastUpdatedAt: Date;
+    password?: string | null;
+    role?: string[] | null;
+    createdAt?: Date | null;
+    lastUpdatedAt?: Date | null;
 }
 
 interface Lead {
     id: string;
-    lId: number;
-    userMatriculation: number;
+    lId?: number | null;
+    userMatriculation?: number | null;
     userEmail: string;
-    content: string;
-    leadTitle: string;
-    imageUrls: string[];
-    createdAt: Date;
-    lastUpdatedAt: Date;
-    comments: string[];
-    likes: string[];
+    content?: string | null;
+    leadTitle?: string | null;
+    imageUrls?: string[] | null;
+    createdAt?: Date | null;
+    lastUpdatedAt?: Date | null;
+    comments?: string[] | null;
+    likes?: string[] | null;
 }
 
 const Profile: React.FC = () => {
@@ -40,7 +39,7 @@ const Profile: React.FC = () => {
     useEffect(() => {
         if (user?.email) {
             axios
-                .get(`http://localhost:8080/user/email/${user.email}`, {
+                .get(`http://localhost:8080/user/${user.email}`, {
                     headers: {
                         "Content-Type": "application/json",
                         authorization: `${user.email} ${localStorage.getItem("accessToken")}`,
@@ -48,17 +47,17 @@ const Profile: React.FC = () => {
                 })
                 .then((response) => {
                     const data = response.data;
-                    data.dob = new Date(data.dob);
-                    data.createdAt = new Date(data.createdAt);
-                    data.lastUpdatedAt = new Date(data.lastUpdatedAt);
+                    data.dob = data.dob ? new Date(data.dob) : null;
+                    data.createdAt = data.createdAt ? new Date(data.createdAt) : null;
+                    data.lastUpdatedAt = data.lastUpdatedAt ? new Date(data.lastUpdatedAt) : null;
                     setProfile(data);
                 })
                 .catch((error) => {
-                    toast.error(error.message, { id: "profile-fetch-error" });
+                    toast.error(error.message, {id: "profile-fetch-error"});
                 });
 
             axios
-                .get(`http://localhost:8080/leads/email/lead-by-userEmail/${user.email}`, {
+                .get(`http://localhost:8080/leads/lead-by-userEmail/${user.email}`, {
                     headers: {
                         "Content-Type": "application/json",
                         authorization: `${user.email} ${localStorage.getItem("accessToken")}`,
@@ -67,13 +66,13 @@ const Profile: React.FC = () => {
                 .then((response) => {
                     const leadsData = response.data.map((lead: any) => ({
                         ...lead,
-                        createdAt: new Date(lead.createdAt),
-                        lastUpdatedAt: new Date(lead.lastUpdatedAt),
+                        createdAt: lead.createdAt ? new Date(lead.createdAt) : null,
+                        lastUpdatedAt: lead.lastUpdatedAt ? new Date(lead.lastUpdatedAt) : null,
                     }));
                     setLeads(leadsData);
                 })
                 .catch((error) => {
-                    toast.error(error.message, { id: "leads-fetch-error" });
+                    toast.error(error.message, {id: "leads-fetch-error"});
                 });
         }
     }, [user?.email]);
@@ -83,64 +82,102 @@ const Profile: React.FC = () => {
     }
 
     return (
-        <div className="profile-container max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold mb-4">Profile Information</h1>
-            <div className="grid grid-cols-1 gap-4">
-                <div className="flex items-center">
-                    <span className="font-semibold text-gray-700">Matriculation:</span>
-                    <span className="ml-2 text-gray-900">{profile.matriculation}</span>
-                </div>
-                <div className="flex items-center">
-                    <span className="font-semibold text-gray-700">First Name:</span>
-                    <span className="ml-2 text-gray-900">{profile.firstName}</span>
-                </div>
-                <div className="flex items-center">
-                    <span className="font-semibold text-gray-700">Last Name:</span>
-                    <span className="ml-2 text-gray-900">{profile.lastName}</span>
-                </div>
-                <div className="flex items-center">
-                    <span className="font-semibold text-gray-700">Date of Birth:</span>
-                    <span className="ml-2 text-gray-900">{profile.dob.toDateString()}</span>
-                </div>
-                <div className="flex items-center">
-                    <span className="font-semibold text-gray-700">Email:</span>
-                    <span className="ml-2 text-gray-900">{profile.email}</span>
-                </div>
-                <div className="flex items-center">
-                    <span className="font-semibold text-gray-700">Role:</span>
-                    <span className="ml-2 text-gray-900">{profile.role.join(", ")}</span>
-                </div>
-                <div className="flex items-center">
-                    <span className="font-semibold text-gray-700">Created At:</span>
-                    <span className="ml-2 text-gray-900">{profile.createdAt.toLocaleString()}</span>
-                </div>
-                <div className="flex items-center">
-                    <span className="font-semibold text-gray-700">Last Updated At:</span>
-                    <span className="ml-2 text-gray-900">{profile.lastUpdatedAt?.toLocaleString()}</span>
-                </div>
-                <div className="flex items-center">
-                    <span className="font-semibold text-gray-700">ID:</span>
-                    <span className="ml-2 text-gray-900">{profile._id}</span>
+        <div className="max-w-8xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+            <div className="profile-container mb-8 p-6 bg-gray-100 rounded-lg shadow-md">
+                <h1 className="text-2xl font-bold mb-4">Profile Information</h1>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Matriculation</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.matriculation ?? "N/A"}</td>
+                        </tr>
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">First Name
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.firstName ?? "N/A"}</td>
+                        </tr>
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Last Name</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.lastName ?? "N/A"}</td>
+                        </tr>
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Date of
+                                Birth
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.dob ? profile.dob.toDateString() : "N/A"}</td>
+                        </tr>
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Email</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.email}</td>
+                        </tr>
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Role</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.role ? profile.role.join(", ") : "N/A"}</td>
+                        </tr>
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Created At
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.createdAt ? profile.createdAt.toLocaleString() : "N/A"}</td>
+                        </tr>
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Last Updated
+                                At
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.lastUpdatedAt ? profile.lastUpdatedAt.toLocaleString() : "N/A"}</td>
+                        </tr>
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ID</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile._id}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <h2 className="text-xl font-bold mt-6 mb-4">Leads Created by You</h2>
-            <div className="grid grid-cols-1 gap-4">
-                {leads.map((lead) => (
-                    <div key={lead.id} className="p-4 bg-gray-100 rounded-lg shadow-md">
-                        <h3 className="text-lg font-semibold">{lead.leadTitle}</h3>
-                        <p className="text-gray-700">{lead.content}</p>
-                        <p className="text-gray-500 text-sm">Created At: {lead.createdAt.toLocaleString()}</p>
-                        <p className="text-gray-500 text-sm">Last Updated At: {lead.lastUpdatedAt.toLocaleString()}</p>
-                        <p className="text-gray-500 text-sm">Comments: {lead.comments.length}</p>
-                        <p className="text-gray-500 text-sm">Likes: {lead.likes.length}</p>
-                        {lead.imageUrls.map((url, index) => (
-                            <img key={index} src={url} alt={`Lead Image ${index + 1}`} className="mt-2" />
-                        ))}
-                    </div>
-                ))}
+
+
+            {/* Leads Table Card */}
+            <div className="profile-container mb-8 p-6 bg-gray-100 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4">Leads Created by You</h2>
+                <div className="overflow-x-auto">
+                    {leads.length > 0 ? (
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Content</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created
+                                    At
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last
+                                    Updated At
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comments</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Likes</th>
+                            </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                            {leads.map((lead) => (
+                                <tr key={lead.id}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{lead.leadTitle ?? "Untitled"}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lead.content ?? "No content available"}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lead.createdAt ? lead.createdAt.toLocaleString() : "N/A"}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lead.lastUpdatedAt ? lead.lastUpdatedAt.toLocaleString() : "N/A"}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lead.comments ? lead.comments.length : 0}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{lead.likes ? lead.likes.length : 0}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>No leads available</p>
+                    )}
+                </div>
             </div>
         </div>
     );
+
+
 };
 
 export default Profile;
