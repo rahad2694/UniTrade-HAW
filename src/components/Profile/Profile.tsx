@@ -49,7 +49,7 @@ const Profile: React.FC = () => {
     useEffect(() => {
         if (user?.email) {
             axios
-                .get(`http://localhost:8080/user/${user.email}`, {
+                .get(`https://unitrade-hawserver-production.up.railway.app/user/${user.email}`, {
                     headers: {
                         "Content-Type": "application/json",
                         authorization: `${user.email} ${localStorage.getItem("accessToken")}`,
@@ -67,7 +67,7 @@ const Profile: React.FC = () => {
                 });
 
             axios
-                .get(`http://localhost:8080/leads/lead-by-userEmail/${user.email}`, {
+                .get(`https://unitrade-hawserver-production.up.railway.app/leads/lead-by-userEmail/${user.email}`, {
                     headers: {
                         "Content-Type": "application/json",
                         authorization: `${user.email} ${localStorage.getItem("accessToken")}`,

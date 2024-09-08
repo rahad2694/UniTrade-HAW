@@ -31,7 +31,7 @@ const EditUserInfo: React.FC = () => {
     useEffect(() => {
         if (user?.email) {
             axios
-                .get(`http://localhost:8080/user/${user.email}`, {
+                .get(`https://unitrade-hawserver-production.up.railway.app/user/${user.email}`, {
                     headers: {
                         "Content-Type": "application/json",
                         authorization: `${user.email} ${localStorage.getItem("accessToken")}`,
@@ -52,7 +52,7 @@ const EditUserInfo: React.FC = () => {
         e.preventDefault();
         if (profile && user?.email) {
             try {
-                await axios.put(`http://localhost:8080/user/update/${user.email}`, profile, {
+                await axios.put(`https://unitrade-hawserver-production.up.railway.app/user/update/${user.email}`, profile, {
                     headers: {
                         "Content-Type": "application/json",
                         authorization: `${user.email} ${localStorage.getItem("accessToken")}`,
