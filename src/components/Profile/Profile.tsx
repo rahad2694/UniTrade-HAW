@@ -18,9 +18,24 @@ interface UserProfile {
     lastUpdatedAt: Date;
 }
 
+interface Lead {
+    id: string;
+    lId: number;
+    userMatriculation: number;
+    userEmail: string;
+    content: string;
+    leadTitle: string;
+    imageUrls: string[];
+    createdAt: Date;
+    lastUpdatedAt: Date;
+    comments: string[];
+    likes: string[];
+}
+
 const Profile: React.FC = () => {
     const [user] = useAuthState(auth);
     const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [leads, setLeads] = useState<Lead[]>([]);
 
     useEffect(() => {
         if (user?.email) {
@@ -40,6 +55,25 @@ const Profile: React.FC = () => {
                 })
                 .catch((error) => {
                     toast.error(error.message, { id: "profile-fetch-error" });
+                });
+
+            axios
+                .get(`http://localhost:8080/leads/email/lead-by-userEmail/${user.email}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        authorization: `${user.email} ${localStorage.getItem("accessToken")}`,
+                    },
+                })
+                .then((response) => {
+                    const leadsData = response.data.map((lead: any) => ({
+                        ...lead,
+                        createdAt: new Date(lead.createdAt),
+                        lastUpdatedAt: new Date(lead.lastUpdatedAt),
+                    }));
+                    setLeads(leadsData);
+                })
+                .catch((error) => {
+                    toast.error(error.message, { id: "leads-fetch-error" });
                 });
         }
     }, [user?.email]);
@@ -88,6 +122,22 @@ const Profile: React.FC = () => {
                     <span className="font-semibold text-gray-700">ID:</span>
                     <span className="ml-2 text-gray-900">{profile._id}</span>
                 </div>
+            </div>
+            <h2 className="text-xl font-bold mt-6 mb-4">Leads Created by You</h2>
+            <div className="grid grid-cols-1 gap-4">
+                {leads.map((lead) => (
+                    <div key={lead.id} className="p-4 bg-gray-100 rounded-lg shadow-md">
+                        <h3 className="text-lg font-semibold">{lead.leadTitle}</h3>
+                        <p className="text-gray-700">{lead.content}</p>
+                        <p className="text-gray-500 text-sm">Created At: {lead.createdAt.toLocaleString()}</p>
+                        <p className="text-gray-500 text-sm">Last Updated At: {lead.lastUpdatedAt.toLocaleString()}</p>
+                        <p className="text-gray-500 text-sm">Comments: {lead.comments.length}</p>
+                        <p className="text-gray-500 text-sm">Likes: {lead.likes.length}</p>
+                        {lead.imageUrls.map((url, index) => (
+                            <img key={index} src={url} alt={`Lead Image ${index + 1}`} className="mt-2" />
+                        ))}
+                    </div>
+                ))}
             </div>
         </div>
     );

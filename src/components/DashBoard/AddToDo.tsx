@@ -49,10 +49,11 @@ const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch }) => {
       content,
       createdAt,
       lastUpdatedAt,
+      userEmail: user?.email,
       userMatriculation,
       imageUrls: [imageUrl],
     };
-    const url = `https://unitrade-hawserver-production.up.railway.app/leads/create-lead`;
+    const url = `http://localhost:8080/leads/create-lead`;
 
     await fetch(url, {
       method: "POST",
