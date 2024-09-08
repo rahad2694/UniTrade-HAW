@@ -3,6 +3,15 @@ import {useAuthState} from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
 import axios from "axios";
 import toast from "react-hot-toast";
+import {Link} from "react-router-dom";
+
+interface Address {
+    street: string;
+    houseNumber: number;
+    postalCode: number;
+    city: string;
+    country: string;
+}
 
 interface UserProfile {
     _id: string;
@@ -15,6 +24,7 @@ interface UserProfile {
     role?: string[] | null;
     createdAt?: Date | null;
     lastUpdatedAt?: Date | null;
+    address?: Address | null;
 }
 
 interface Lead {
@@ -81,6 +91,11 @@ const Profile: React.FC = () => {
         return <div>Loading...</div>;
     }
 
+    const fullName = `${profile.firstName ?? ""} ${profile.lastName ?? ""}`.trim() || "N/A";
+    const addressString = profile.address
+        ? `${profile.address.street}, ${profile.address.houseNumber}, ${profile.address.postalCode}, ${profile.address.city}, ${profile.address.country}`
+        : "N/A";
+
     return (
         <div className="max-w-8xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
             <div className="profile-container mb-8 p-6 bg-gray-100 rounded-lg shadow-md">
@@ -89,17 +104,12 @@ const Profile: React.FC = () => {
                     <table className="min-w-full divide-y divide-gray-200">
                         <tbody className="bg-white divide-y divide-gray-200">
                         <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Name</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{fullName}</td>
+                        </tr>
+                        <tr>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Matriculation</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.matriculation ?? "N/A"}</td>
-                        </tr>
-                        <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">First Name
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.firstName ?? "N/A"}</td>
-                        </tr>
-                        <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Last Name</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile.lastName ?? "N/A"}</td>
                         </tr>
                         <tr>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Date of
@@ -130,9 +140,16 @@ const Profile: React.FC = () => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ID</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{profile._id}</td>
                         </tr>
+                        <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Address</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{addressString}</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
+                <Link to="/edit-user-info" className="text-blue-500 hover:underline">
+                    Edit Profile
+                </Link>
             </div>
 
 
