@@ -11,7 +11,7 @@ interface Props {
   handleRefetch: () => void;
 }
 
-const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch }) => {
+const AddLead: React.FC<Props> = ({ handleClose, handleRefetch }) => {
   const [user] = useAuthState(auth);
   const [userMatriculation, setUserMatriculation] = useState(0);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -159,4 +159,4 @@ const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch }) => {
   );
 };
 
-export default AddToDo;
+export default AddLead;

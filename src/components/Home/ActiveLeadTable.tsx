@@ -16,7 +16,7 @@ interface Props {
   index: number;
 }
 
-const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
+const ActiveLeadTable: React.FC<Props> = ({ item, index }) => {
   const [user] = useAuthState(auth);
   const { leadTitle, content, id } = item;
 
@@ -138,4 +138,4 @@ const ActiveToDoTable: React.FC<Props> = ({ item, index }) => {
   );
 };
 
-export default ActiveToDoTable;
+export default ActiveLeadTable;

@@ -4,7 +4,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
 import auth from "../../firebase.init";
 // import ActiveToDoTable from "../Home/ActiveToDoTable";
-import AddTodoModal from "./AddTodoModal";
+import AddLeadModal from "./AddLeadModal";
 import { Link } from "react-router-dom";
 import Lead, { Item } from "./Lead";
 
@@ -65,11 +65,11 @@ const DashBoard: React.FC<Props> = () => {
       >
         Add New Post
       </label>
-      <AddTodoModal
+      <AddLeadModal
         showModal={showModal}
         setShowModal={setShowModal}
         handleRefetch={handleRefetch}
-      ></AddTodoModal>
+      ></AddLeadModal>
 
       {allLeads.length === 0 ? (
         <h1 className="text-red-500 font-bold my-2">

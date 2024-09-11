@@ -1,5 +1,5 @@
 import React from "react";
-import AddToDo from "./AddToDo";
+import AddLead from "./AddLead";
 
 interface Props {
   prop?: string;
@@ -8,7 +8,7 @@ interface Props {
   handleRefetch: () => void;
 }
 
-const AddTodoModal: React.FC<Props> = ({
+const AddLeadModal: React.FC<Props> = ({
   showModal,
   setShowModal,
   handleRefetch,
@@ -34,14 +34,14 @@ const AddTodoModal: React.FC<Props> = ({
             ✕
           </label>
           <h3 className="text-lg font-bold">Do you want to post something?</h3>
-          <AddToDo
+          <AddLead
             handleClose={handleClose}
             handleRefetch={handleRefetch}
-          ></AddToDo>
+          ></AddLead>
         </div>
       </div>
     </div>
   );
 };
 
-export default AddTodoModal;
+export default AddLeadModal;
