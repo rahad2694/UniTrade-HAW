@@ -44,6 +44,8 @@ const SignUp: React.FC<Props> = () => {
         body: JSON.stringify({
           email: user?.user.email,
           matriculation: Math.round(Math.random() * 1000000),
+          firstName: user?.user.displayName,
+          userProfilePic: user?.user.photoURL,
         }),
       })
         .then((res) => res.json())
