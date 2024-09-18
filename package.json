@@ -19,7 +19,8 @@
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-hot-toast": "^2.4.1",
-    "react-router-dom": "^6.26.0",
+    "react-modal": "^3.16.1",
+    "react-router-dom": "^6.26.2",
     "unitrade-haw": "file:"
   },
   "devDependencies": {

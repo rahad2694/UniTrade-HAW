@@ -10,6 +10,7 @@ import DashBoard from "./components/DashBoard/DashBoard";
 import Home from "./components/Home/Home";
 import Profile from "./components/Profile/Profile";
 import EditUserInfo from "./components/Profile/EditUserInfo";
+import PostDetails from './components/PostDetails/PostDetails'; // Import your PostDetails component
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <Route path="/login" element={<Login></Login>}></Route>
         <Route path="/signup" element={<SignUp></SignUp>}></Route>
         <Route path="/profile" element={<Profile></Profile>}></Route>
-          <Route path="/edit-user-info" element={<EditUserInfo />} />
+        <Route path="/edit-user-info" element={<EditUserInfo />} />
         <Route
           path="/dashboard"
           element={
@@ -29,6 +30,9 @@ function App() {
             </RequireAuth>
           }
         ></Route>
+
+        {/* New route for PostDetails */}
+        <Route path="/post/:id" element={<PostDetails />} />
 
         <Route path="*" element={<NotFound></NotFound>}></Route>
       </Routes>
