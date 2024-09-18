@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import auth from "../../firebase.init";
 import Spinners from "../Spinners/Spinners";
+import axios from "axios";
+import { UserProfile } from "../Profile/Profile";
 
 interface Props {
   prop?: string;
@@ -25,23 +27,42 @@ const Login: React.FC<Props> = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // const [user] = useAuthState(auth);
+  const [userData, setUserData] = useState<UserProfile | null>(null);
+
+  const getIfUserExists = async (userEmail: string) => {
+    if (userEmail) {
+      const url = `https://unitrade-hawserver-production.up.railway.app/user/${userEmail}`;
+      const response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `${userEmail} ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setUserData(response.data);
+    }
+  };
+
   useEffect(() => {
+    const user = emailUser || googleUser;
+    getIfUserExists(email ?? user?.user.email);
+
     localStorage.setItem("accessToken", "fau fau");
 
-    if (emailUser || googleUser) {
-      console.log("I am in");
-      const user = emailUser || googleUser;
-      const url = `https://unitrade-hawserver-production.up.railway.app/login`;
+    if (user) {
+      navigate(from, { replace: true });
+    }
+    if (!userData && email) {
+      const url = `https://unitrade-hawserver-production.up.railway.app/user/addUser`;
       fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: user?.user.email,
-          // username: "admin",
-          // password: 123456,
+          email: email ?? user?.user.email,
+          matriculation: Math.round(Math.random() * 1000000),
+          firstName: user?.user.displayName,
+          userProfilePic: user?.user.photoURL,
         }),
       })
         .then((res) => res.json())
@@ -52,7 +73,7 @@ const Login: React.FC<Props> = () => {
           navigate(from, { replace: true });
         });
     }
-  }, [emailUser, googleUser, navigate, from]);
+  }, [emailUser, googleUser, navigate, from, email, userData]);
 
   if (emailLoading || googleLoading) {
     return (

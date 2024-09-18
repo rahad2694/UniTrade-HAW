@@ -6,8 +6,16 @@ import auth from "../../firebase.init";
 // import ActiveToDoTable from "../Home/ActiveToDoTable";
 import AddTodoModal from "./AddTodoModal";
 import { Link } from "react-router-dom";
-import Lead, { Item } from "./Lead";
+import Lead from "./Lead";
 
+export interface LeadType {
+  leadTitle: string;
+  content: string;
+  id: string;
+  imageUrls: string[];
+  createdAt?: string;
+  lastUpdatedAt?: string;
+}
 interface Props {
   prop?: string;
 }
@@ -78,10 +86,10 @@ const DashBoard: React.FC<Props> = () => {
       ) : null}
       <div className="my-12 mx-12">
         <div className="p-4 grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-8">
-          {allLeads?.map((lead: Item) => (
+          {allLeads?.map((lead: LeadType) => (
             <Lead
               key={lead.id}
-              item={lead}
+              lead={lead}
               handleRefetch={handleRefetch}
             ></Lead>
           ))}

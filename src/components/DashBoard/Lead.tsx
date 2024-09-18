@@ -6,21 +6,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { LeadType } from "./DashBoard";
 
-export interface Item {
-  leadTitle: string;
-  content: string;
-  id: string;
-  imageUrls: string[];
-}
 interface Props {
-  item: Item;
+  lead: LeadType;
   handleRefetch: () => void;
 }
 
-const Lead: React.FC<Props> = ({ item, handleRefetch }) => {
+const Lead: React.FC<Props> = ({ lead, handleRefetch }) => {
   const [user] = useAuthState(auth);
-  const { leadTitle, content, id, imageUrls } = item;
+  const { leadTitle, content, id, imageUrls } = lead;
 
   const [userMatriculation, setUserMatriculation] = useState(0);
 
@@ -69,7 +64,7 @@ const Lead: React.FC<Props> = ({ item, handleRefetch }) => {
       toast.success("Attempt Terminated", { id: "delete-cancel" });
     }
   };
-  const updateItemToDB = async (updatedItem: Item) => {
+  const updateItemToDB = async (updatedItem: LeadType) => {
     try {
       //   const id = id;
       const response = await axios.put(
