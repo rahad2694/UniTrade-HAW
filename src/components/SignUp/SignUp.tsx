@@ -9,6 +9,8 @@ import toast from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import auth from "../../firebase.init";
 import Spinners from "../Spinners/Spinners";
+import { UserProfile } from "../Profile/Profile";
+import axios from "axios";
 
 interface Props {
   prop?: string;
@@ -31,32 +33,52 @@ const SignUp: React.FC<Props> = () => {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [userData, setUserData] = useState<UserProfile | null>(null);
+
+  const getIfUserExists = async (userEmail: string | null | undefined) => {
+    if (userEmail) {
+      const url = `https://unitrade-hawserver-production.up.railway.app/user/${userEmail}`;
+      const response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `${userEmail} ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setUserData(response.data);
+    }
+  };
+
   useEffect(() => {
     if (emailUser || googleUser) {
       const user = emailUser || googleUser;
       console.log(user?.user.displayName);
-      const url = `https://unitrade-hawserver-production.up.railway.app/user/addUser`;
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: user?.user.email,
-          matriculation: Math.round(Math.random() * 1000000),
-          firstName: user?.user.displayName,
-          userProfilePic: user?.user.photoURL,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          const message = `Sign up Success`;
-          toast.success(message, { id: "login" });
-          localStorage.setItem("accessToken", data.accessToken);
-          navigate(from, { replace: true });
-        });
+      getIfUserExists(user?.user.email);
+
+      if (!userData) {
+        const url = `https://unitrade-hawserver-production.up.railway.app/user/addUser`;
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user?.user.email,
+            matriculation: Math.round(Math.random() * 1000000),
+            firstName: user?.user.displayName,
+            userProfilePic: user?.user.photoURL,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            const message = `Sign up Success`;
+            toast.success(message, { id: "login" });
+            localStorage.setItem("accessToken", data.accessToken);
+            navigate(from, { replace: true });
+          });
+      }
     }
-  }, [emailUser, googleUser, navigate, from]);
+  }, [emailUser, googleUser, navigate, from, userData]);
 
   useEffect(() => {
     if (emailError || googleError) {
