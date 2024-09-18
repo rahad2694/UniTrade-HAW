@@ -58,7 +58,7 @@ const EditUserInfo: React.FC = () => {
     if (profile && user?.email) {
       try {
         await axios.put(
-          `https://unitrade-hawserver-production.up.railway.app/user/update/${user.email}`,
+          `https://unitrade-hawserver-production.up.railway.app/user/update`,
           profile,
           {
             headers: {

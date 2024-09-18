@@ -23,7 +23,7 @@ interface Props {
 const DashBoard: React.FC<Props> = () => {
   const [allLeads, setAllLeads] = useState([]);
   const [user] = useAuthState(auth);
-  const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [refetch, setRefetch] = useState(false);
 
   useEffect(() => {
@@ -67,15 +67,15 @@ const DashBoard: React.FC<Props> = () => {
   return (
     <div>
       <label
-        onClick={() => setShowModal(true)}
+        onClick={() => setShowAddModal(true)}
         htmlFor="add-to-do-modal"
         className="btn modal-button my-5"
       >
         Add New Post
       </label>
       <AddTodoModal
-        showModal={showModal}
-        setShowModal={setShowModal}
+        showModal={showAddModal}
+        setShowModal={setShowAddModal}
         handleRefetch={handleRefetch}
       ></AddTodoModal>
 
@@ -91,6 +91,7 @@ const DashBoard: React.FC<Props> = () => {
               key={lead.id}
               lead={lead}
               handleRefetch={handleRefetch}
+              setShowAddModal={setShowAddModal}
             ></Lead>
           ))}
         </div>

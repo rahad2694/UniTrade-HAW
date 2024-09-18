@@ -11,9 +11,10 @@ import { LeadType } from "./DashBoard";
 interface Props {
   lead: LeadType;
   handleRefetch: () => void;
+  setShowAddModal: (showAddModal: boolean) => void;
 }
 
-const Lead: React.FC<Props> = ({ lead, handleRefetch }) => {
+const Lead: React.FC<Props> = ({ lead, handleRefetch, setShowAddModal }) => {
   const [user] = useAuthState(auth);
   const { leadTitle, content, id, imageUrls } = lead;
 
@@ -80,15 +81,16 @@ const Lead: React.FC<Props> = ({ lead, handleRefetch }) => {
     }
   };
   const handleUpdateLead = (id: string) => {
+    setShowAddModal(true);
     // const id = id;
-    const updatedItem = {
-      id,
-      leadTitle,
-      content,
-      userMatriculation,
-      imageUrls,
-    };
-    updateItemToDB(updatedItem);
+    // const updatedItem = {
+    //   id,
+    //   leadTitle,
+    //   content,
+    //   userMatriculation,
+    //   imageUrls,
+    // };
+    // updateItemToDB(updatedItem);
   };
 
   const noImageSrc = "https://i.ibb.co/ZMYzS6R/no-image.jpg";
