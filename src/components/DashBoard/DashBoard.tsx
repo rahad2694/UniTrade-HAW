@@ -6,8 +6,16 @@ import auth from "../../firebase.init";
 // import ActiveToDoTable from "../Home/ActiveToDoTable";
 import AddTodoModal from "./AddTodoModal";
 import { Link } from "react-router-dom";
-import Lead, { Item } from "./Lead";
+import Lead from "./Lead";
 
+export interface LeadType {
+  leadTitle: string;
+  content: string;
+  id: string;
+  imageUrls: string[];
+  createdAt?: string;
+  lastUpdatedAt?: string;
+}
 interface Props {
   prop?: string;
 }
@@ -15,7 +23,7 @@ interface Props {
 const DashBoard: React.FC<Props> = () => {
   const [allLeads, setAllLeads] = useState([]);
   const [user] = useAuthState(auth);
-  const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [refetch, setRefetch] = useState(false);
 
   useEffect(() => {
@@ -59,15 +67,15 @@ const DashBoard: React.FC<Props> = () => {
   return (
     <div>
       <label
-        onClick={() => setShowModal(true)}
+        onClick={() => setShowAddModal(true)}
         htmlFor="add-to-do-modal"
         className="btn modal-button my-5"
       >
         Add New Post
       </label>
       <AddTodoModal
-        showModal={showModal}
-        setShowModal={setShowModal}
+        showModal={showAddModal}
+        setShowModal={setShowAddModal}
         handleRefetch={handleRefetch}
       ></AddTodoModal>
 
@@ -78,11 +86,12 @@ const DashBoard: React.FC<Props> = () => {
       ) : null}
       <div className="my-12 mx-12">
         <div className="p-4 grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-8">
-          {allLeads?.map((lead: Item) => (
+          {allLeads?.map((lead: LeadType) => (
             <Lead
               key={lead.id}
-              item={lead}
+              lead={lead}
               handleRefetch={handleRefetch}
+              setShowAddModal={setShowAddModal}
             ></Lead>
           ))}
         </div>
