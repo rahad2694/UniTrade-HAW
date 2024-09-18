@@ -53,7 +53,7 @@ const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch }) => {
       userMatriculation,
       imageUrls: [imageUrl],
     };
-    const url = `http://localhost:8080/leads/create-lead`;
+    const url = `https://unitrade-hawserver-production.up.railway.app/leads/create-lead`;
 
     await fetch(url, {
       method: "POST",
