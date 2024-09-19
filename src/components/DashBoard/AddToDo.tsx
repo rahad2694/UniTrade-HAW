@@ -29,7 +29,6 @@ const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch, lead }) => {
     const createdAt = new Date().toISOString();
     const lastUpdatedAt = createdAt;
 
-    // const imageUrl = await handleImageUpload();
     const imageUrls = lead?.imageUrls ?? [];
     if (uploadedImage) {
       imageUrls.push(uploadedImage);
@@ -115,9 +114,6 @@ const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch, lead }) => {
     });
   }, [lead]);
 
-  useEffect(() => {
-    setUploadedImage("");
-  }, []);
   const handleChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
     setFormData({
