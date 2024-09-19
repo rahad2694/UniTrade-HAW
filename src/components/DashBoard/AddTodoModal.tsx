@@ -1,28 +1,28 @@
 import React from "react";
 import AddToDo from "./AddToDo";
+import { LeadType } from "./DashBoard";
 
 interface Props {
   prop?: string;
   showModal: boolean;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  handleClose: () => void;
   handleRefetch: () => void;
+  lead?: LeadType;
 }
 
 const AddTodoModal: React.FC<Props> = ({
   showModal,
-  setShowModal,
+  handleClose,
   handleRefetch,
+  lead,
 }) => {
-  function handleClose() {
-    setShowModal(false);
-  }
   return (
     <div>
       <input
         type="checkbox"
         id="add-to-do-modal"
         className="modal-toggle"
-        checked={showModal}
+        checked={!!showModal}
       />
       <div className="modal">
         <div className="modal-box relative">
@@ -33,8 +33,11 @@ const AddTodoModal: React.FC<Props> = ({
           >
             ✕
           </label>
-          <h3 className="text-lg font-bold">Do you want to post something?</h3>
+          <h3 className="text-lg font-bold">
+            {lead ? "Update Post" : "Do you want to post something?"}
+          </h3>
           <AddToDo
+            lead={lead}
             handleClose={handleClose}
             handleRefetch={handleRefetch}
           ></AddToDo>

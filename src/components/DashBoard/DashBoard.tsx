@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import toast from "react-hot-toast";
 import auth from "../../firebase.init";
-// import ActiveToDoTable from "../Home/ActiveToDoTable";
 import AddTodoModal from "./AddTodoModal";
 import { Link } from "react-router-dom";
 import Lead from "./Lead";
@@ -25,6 +24,7 @@ const DashBoard: React.FC<Props> = () => {
   const [user] = useAuthState(auth);
   const [showAddModal, setShowAddModal] = useState(false);
   const [refetch, setRefetch] = useState(false);
+  const [selectedLeadId, setSelectedLeadId] = useState("");
 
   useEffect(() => {
     async function getItems() {
@@ -64,6 +64,38 @@ const DashBoard: React.FC<Props> = () => {
     setRefetch(!refetch);
   };
 
+  function handleClose() {
+    setShowAddModal(false);
+    setSelectedLeadId("");
+  }
+
+  const handleDelete = (id: string) => {
+    const proceed = window.confirm("Are you sure to delete?");
+    if (proceed) {
+      axios
+        .delete(
+          `https://unitrade-hawserver-production.up.railway.app/leads/delete/${user?.email}/${id}`
+        )
+        .then((response) => {
+          toast.success("Successfully Deleted " + response.statusText, {
+            id: "deleted",
+          });
+          handleRefetch();
+        })
+        .catch((error) => {
+          if (error.response.status === 403) {
+            toast.error("You Can't delete this Post", {
+              id: "delete-access-error",
+            });
+          } else {
+            toast.error(error.message, { id: "delete-error" });
+          }
+        });
+    } else {
+      toast.success("Attempt Terminated", { id: "delete-cancel" });
+    }
+  };
+
   return (
     <div>
       <label
@@ -75,8 +107,9 @@ const DashBoard: React.FC<Props> = () => {
       </label>
       <AddTodoModal
         showModal={showAddModal}
-        setShowModal={setShowAddModal}
+        handleClose={handleClose}
         handleRefetch={handleRefetch}
+        lead={allLeads.find((lead: LeadType) => lead.id === selectedLeadId)}
       ></AddTodoModal>
 
       {allLeads.length === 0 ? (
@@ -90,8 +123,9 @@ const DashBoard: React.FC<Props> = () => {
             <Lead
               key={lead.id}
               lead={lead}
-              handleRefetch={handleRefetch}
-              setShowAddModal={setShowAddModal}
+              setShowAddModal={() => setShowAddModal(true)}
+              setSelectedLeadId={setSelectedLeadId}
+              handleDelete={handleDelete}
             ></Lead>
           ))}
         </div>
@@ -99,41 +133,6 @@ const DashBoard: React.FC<Props> = () => {
           Back to Home Page
         </Link>
       </div>
-
-      {/* <div className="my-3 mx-4">
-        <div>
-          {allItems.length === 0 ? (
-            <h1 className="text-red-500 font-bold my-3">
-              No Post added by you yet
-            </h1>
-          ) : (
-            <h1 className="text-green-500 font-bold my-3">Your Posts</h1>
-          )}
-          <div className="overflow-x-auto">
-            <table className="table mx-auto w-1/4 md:w-2/4 lg:w-11/12 text-center">
-              <thead>
-                <tr>
-                  <th className="hidden md:table-cell"></th>
-                  <th>Post Title</th>
-                  <th>Post Description</th>
-                  <th>Action</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {allItems.map((item, index) => (
-                  <ActiveToDoTable
-                    index={index}
-                    // @ts-expect-error needed to ADJUST
-                    key={item.id}
-                    item={item}
-                  ></ActiveToDoTable>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };

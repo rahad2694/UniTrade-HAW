@@ -1,87 +1,42 @@
-import { useAuthState } from "react-firebase-hooks/auth";
-import auth from "../../firebase.init";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import React from "react";
 import { LeadType } from "./DashBoard";
 
 interface Props {
   lead: LeadType;
-  handleRefetch: () => void;
-  setShowAddModal: (showAddModal: boolean) => void;
+  setShowAddModal: () => void;
+  setSelectedLeadId: (id: string) => void;
+  handleDelete: (id: string) => void;
 }
 
-const Lead: React.FC<Props> = ({ lead, handleRefetch, setShowAddModal }) => {
-  const [user] = useAuthState(auth);
+const Lead: React.FC<Props> = ({
+  lead,
+  setShowAddModal,
+  setSelectedLeadId,
+  handleDelete,
+}) => {
   const { leadTitle, content, id, imageUrls } = lead;
 
-  const [userMatriculation, setUserMatriculation] = useState(0);
-
-  useEffect(() => {
-    const url = `https://unitrade-hawserver-production.up.railway.app/user/email/${user?.email}`;
-
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `${user?.email} ${localStorage.getItem("accessToken")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setUserMatriculation(res.matriculation);
-      })
-      .catch((err) => {
-        toast.error(err.message, { id: "adding-error" });
-      });
-  }, [user?.email]);
-
-  const handleDelete = (id: string) => {
-    const proceed = window.confirm("Are you sure to delete?");
-    if (proceed) {
-      axios
-        .delete(
-          `https://unitrade-hawserver-production.up.railway.app/leads/delete/${userMatriculation}/${id}`
-        )
-        .then((response) => {
-          toast.success("Successfully Deleted " + response.statusText, {
-            id: "deleted",
-          });
-          handleRefetch();
-        })
-        .catch((error) => {
-          if (error.response.status === 403) {
-            toast.error("You Can't delete this Post", {
-              id: "delete-access-error",
-            });
-          } else {
-            toast.error(error.message, { id: "delete-error" });
-          }
-        });
-    } else {
-      toast.success("Attempt Terminated", { id: "delete-cancel" });
-    }
-  };
-  const updateItemToDB = async (updatedItem: LeadType) => {
-    try {
-      //   const id = id;
-      const response = await axios.put(
-        `https://unitrade-hawserver-production.up.railway.app/updateinfo/${id}`,
-        updatedItem
-      );
-      if (response.status === 200) {
-        toast.success("Lead Update Successful", { id: "Success" });
-      }
-    } catch (error) {
-      // @ts-expect-error need to adjust
-      error && toast.error(error.message, { id: "update-error" });
-    }
-  };
-  const handleUpdateLead = (id: string) => {
-    setShowAddModal(true);
+  // const updateItemToDB = async (updatedItem: LeadType) => {
+  //   try {
+  //     // const id = id;
+  //     const response = await axios.put(
+  //       `https://unitrade-hawserver-production.up.railway.app/updateinfo/${id}`,
+  //       updatedItem
+  //     );
+  //     if (response.status === 200) {
+  //       toast.success("Lead Update Successful", { id: "Success" });
+  //     }
+  //   } catch (error) {
+  //     // @ts-expect-error need to adjust
+  //     error && toast.error(error.message, { id: "update-error" });
+  //   }
+  // };
+  const handleEdit = (id: string) => {
+    setShowAddModal();
+    setSelectedLeadId(id);
     // const id = id;
     // const updatedItem = {
     //   id,
@@ -110,7 +65,7 @@ const Lead: React.FC<Props> = ({ lead, handleRefetch, setShowAddModal }) => {
           <div className="flex justify-center align-middle">
             <button
               title="Edit?"
-              onClick={() => handleUpdateLead(id)}
+              onClick={() => handleEdit(id)}
               className="btn text-white bg-blue-500"
             >
               <FontAwesomeIcon icon={faPen} />
