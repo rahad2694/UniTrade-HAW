@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import Lead from "./Lead";
 
 export interface LeadType {
+  userEmail: string;
   leadTitle: string;
   content: string;
   id: string;
