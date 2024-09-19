@@ -45,6 +45,8 @@ const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch, lead }) => {
       lead ? "update/" + lead.id : "create-lead"
     }`;
 
+    console.log(data, JSON.stringify(data));
+
     await fetch(url, {
       method: lead ? "PUT" : "POST",
       headers: {
@@ -53,7 +55,10 @@ const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch, lead }) => {
       },
       body: JSON.stringify(data),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        res.json();
+      })
       .then(() => {
         toast.success("Post added successfully");
         setUploadedImage("");
@@ -61,6 +66,7 @@ const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch, lead }) => {
         handleClose();
       })
       .catch((err) => {
+        console.log(err);
         toast.error(err.message, { id: "adding-error" });
       });
   };

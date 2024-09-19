@@ -39,6 +39,7 @@ const Login: React.FC<Props> = () => {
         },
       });
       setUserData(response.data);
+      return response.data;
     }
   };
 
@@ -48,10 +49,7 @@ const Login: React.FC<Props> = () => {
 
     localStorage.setItem("accessToken", "fau fau");
 
-    if (user) {
-      navigate(from, { replace: true });
-    }
-    if (!userData && email) {
+    if (!userData && (email || user?.user.email)) {
       const url = `https://unitrade-hawserver-production.up.railway.app/user/addUser`;
       fetch(url, {
         method: "POST",
@@ -59,7 +57,7 @@ const Login: React.FC<Props> = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email ?? user?.user.email,
+          email: user?.user.email ?? email,
           matriculation: Math.round(Math.random() * 1000000),
           firstName: user?.user.displayName,
           userProfilePic: user?.user.photoURL,
@@ -72,6 +70,9 @@ const Login: React.FC<Props> = () => {
           localStorage.setItem("accessToken", data.accessToken);
           navigate(from, { replace: true });
         });
+    }
+    if (user) {
+      navigate(from, { replace: true });
     }
   }, [emailUser, googleUser, navigate, from, email, userData]);
 
