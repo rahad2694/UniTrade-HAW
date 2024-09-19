@@ -26,17 +26,20 @@ const PostDetails: React.FC = () => {
 
   useEffect(() => {
     const fetchPost = async () => {
+      if (!id) {
+        return;
+      }
       try {
         const response = await axios.get(
           `https://unitrade-hawserver-production.up.railway.app/leads/lead-by-id/${id}`
         );
         const postData = response.data;
         setPost(postData);
-        setLikesCount(postData.likes);
+        setLikesCount(postData?.likes?.length);
         setLoading(false);
 
         // Check if the current user has already liked the post
-        if (postData?.likedBy?.includes(user?.email)) {
+        if (postData?.likes?.includes(user?.email)) {
           setLiked(true);
         }
       } catch (error) {
@@ -57,20 +60,14 @@ const PostDetails: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(
-        `https://unitrade-hawserver-production.up.railway.app/leads/${id}/like`,
-        {
-          email: user?.email,
-        }
+      const response = await axios.put(
+        `https://unitrade-hawserver-production.up.railway.app/leads/${id}/like?userEmail=${user?.email}`
       );
-
-      if (response.data.success) {
+      handleRefetch();
+      if (response.status === 200) {
         setLikesCount((prevLikes) => prevLikes + 1);
         setLiked(true);
         toast.success("Post liked!");
-      } else if (response.data.alreadyLiked) {
-        toast.error("You've already liked this post!");
-        setLiked(true); // Even if the backend indicates, mark it as liked
       }
     } catch (error) {
       toast.error("Failed to like the post", { id: "like-error" });
@@ -188,11 +185,10 @@ const PostDetails: React.FC = () => {
           <button
             onClick={handleLike}
             className={`btn text-white ${
-              liked ? "bg-gray-500" : "bg-blue-500"
+              liked ? "bg-green-500" : "bg-blue-500"
             }`}
-            disabled={liked} // Disable if the user has already liked
           >
-            <FontAwesomeIcon icon={faThumbsUp} /> {/* Thumbs up icon */}
+            <FontAwesomeIcon icon={faThumbsUp} />
           </button>
 
           <button
