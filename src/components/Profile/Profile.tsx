@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { LeadType } from "../DashBoard/DashBoard";
 import Lead from "../DashBoard/Lead";
 import AddTodoModal from "../DashBoard/AddTodoModal";
+import Spinners from "../Spinners/Spinners";
 
 interface Address {
   street: string;
@@ -30,135 +31,101 @@ export interface UserProfile {
   address?: Address | null;
 }
 
-// interface Lead {
-//   id: string;
-//   lId?: number | null;
-//   userMatriculation?: number | null;
-//   userEmail: string;
-//   content?: string | null;
-//   leadTitle?: string | null;
-//   imageUrls?: string[] | null;
-//   createdAt?: Date | null;
-//   lastUpdatedAt?: Date | null;
-//   comments?: string[] | null;
-//   likes?: string[] | null;
-// }
-
 const Profile: React.FC = () => {
   const [user] = useAuthState(auth);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+
   const [leads, setLeads] = useState<LeadType[]>([]);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [refetch, setRefetch] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState("");
 
+  const getIfUserExists = async (userEmail: string) => {
+    if (userEmail) {
+      const url = `https://unitrade-hawserver-production.up.railway.app/user/${userEmail}`;
+      const response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `${userEmail} ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setProfile(response.data);
+      return response.data;
+    }
+  };
+
   useEffect(() => {
     if (user?.email) {
-      axios
-        .get(
-          `https://unitrade-hawserver-production.up.railway.app/user/${user.email}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              authorization: `${user.email} ${localStorage.getItem(
-                "accessToken"
-              )}`,
-            },
-          }
-        )
-        .then((response) => {
-          const data = response.data;
-          data.dob = data.dob ? new Date(data.dob) : null;
-          data.createdAt = data.createdAt ? new Date(data.createdAt) : null;
-          data.lastUpdatedAt = data.lastUpdatedAt
-            ? new Date(data.lastUpdatedAt)
-            : null;
-          setProfile(data);
-        })
-        .catch((error) => {
-          toast.error(error.message, { id: "profile-fetch-error" });
-        });
-
-      axios
-        .get(
-          `https://unitrade-hawserver-production.up.railway.app/leads/lead-by-userEmail/${user.email}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              authorization: `${user.email} ${localStorage.getItem(
-                "accessToken"
-              )}`,
-            },
-          }
-        )
-        .then((response) => {
-          const leadsData = response.data.map((lead: LeadType) => ({
-            ...lead,
-            createdAt: lead.createdAt ? new Date(lead.createdAt) : null,
-            lastUpdatedAt: lead.lastUpdatedAt
-              ? new Date(lead.lastUpdatedAt)
-              : null,
-          }));
-          setLeads(leadsData);
-        })
-        .catch((error) => {
-          toast.error(error.message, { id: "leads-fetch-error" });
-        });
+      getIfUserExists(user.email);
+      getItems();
     }
-  }, [user?.email]);
+    async function getItems() {
+      const headers = {
+        email: `${user?.email}`,
+        user: "admin",
+        password: 123456,
+      };
+      try {
+        const response = await axios.get(
+          `https://unitrade-hawserver-production.up.railway.app/leads/lead-by-userEmail/${user?.email}`,
+          {
+            headers: headers,
+          }
+        );
+        setLeads(response.data);
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response) {
+          // @ts-expect-error needed to render the error message in toast
+          toast.error(`Error: ${axiosError.response.data?.message}`, {
+            id: "error-message",
+          });
+        } else if (axiosError.request) {
+          toast.error("No response received from the server", {
+            id: "error-message",
+          });
+        } else {
+          toast.error(axiosError.message, { id: "error-message" });
+        }
+      }
+    }
+  }, [user, refetch]);
 
   const handleRefetch = () => {
     setRefetch(!refetch);
   };
-  // Added handleEdit function
-  // const handleEdit = (id: string) => {
-  //   // Implement the logic to handle edit
-  //   console.log(`Edit lead with id: ${id}`);
-  // };
 
   // Added handleDelete function
-  const handleDelete = async (id: string) => {
-    if (user?.email) {
-      const confirmDelete = window.confirm(
-        "Are you sure you want to delete this lead?"
-      );
-      if (confirmDelete) {
-        try {
-          await axios.delete(
-            `https://unitrade-hawserver-production.up.railway.app/leads/delete/${user.email}/${id}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                authorization: `${user.email} ${localStorage.getItem(
-                  "accessToken"
-                )}`,
-              },
-            }
-          );
-          setLeads(leads.filter((lead) => lead.id !== id));
-          toast.success("Lead deleted successfully");
-        } catch (error) {
-          const axiosError = error as AxiosError;
-          if (axiosError.response) {
-            // @ts-expect-error needed to render the error message in toast
-            toast.error(`Error: ${axiosError.response.data?.message}`, {
-              id: "error-message",
-            });
-          } else if (axiosError.request) {
-            toast.error("No response received from the server", {
-              id: "error-message",
+  const handleDelete = (id: string) => {
+    const proceed = window.confirm("Are you sure to delete?");
+    if (proceed) {
+      axios
+        .delete(
+          `https://unitrade-hawserver-production.up.railway.app/leads/delete/${user?.email}/${id}`
+        )
+        .then((response) => {
+          toast.success("Successfully Deleted " + response.statusText, {
+            id: "deleted",
+          });
+          handleRefetch();
+        })
+        .catch((error) => {
+          if (error.response.status === 403) {
+            toast.error("You Can't delete this Post", {
+              id: "delete-access-error",
             });
           } else {
-            toast.error(axiosError.message, { id: "error-message" });
+            toast.error(error.message, { id: "delete-error" });
           }
-        }
-      }
+        });
+    } else {
+      toast.success("Attempt Terminated", { id: "delete-cancel" });
     }
   };
 
   if (!profile) {
-    return <div>Loading...</div>;
+    return <Spinners></Spinners>;
   }
 
   const fullName =
@@ -182,23 +149,12 @@ const Profile: React.FC = () => {
       ></AddTodoModal>
 
       <div className="overflow-x-auto">
-        <h1 className="text-md lg:text-lg font-bold mb-2 md:mb-4">
-          Profile Information
+        <h1 className="text-md lg:text-lg font-bold mb-2 md:mb-8">
+          {fullName}'s Profile
         </h1>
         <div>
           <table className="table text-center">
-            <thead>
-              <tr>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
             <tbody>
-              <tr className="hover text-xs md:text-sm">
-                <td>Hart Hagerty</td>
-                <td>Desktop Support Technician</td>
-              </tr>
-
               <tr className="hover text-xs md:text-sm">
                 <td>Name</td>
                 <td>{fullName}</td>

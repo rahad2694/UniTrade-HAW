@@ -31,8 +31,6 @@ const DashBoard: React.FC<Props> = () => {
     async function getItems() {
       const headers = {
         email: `${user?.email}`,
-        user: "admin",
-        password: 123456,
       };
       try {
         const response = await axios.get(

@@ -37,7 +37,7 @@ const Navbar: React.FC<Props> = () => {
           </Link>
         ) : null}
         {user?.uid ? (
-          <div className="dropdown dropdown-end mx-3 md:mx-6">
+          <div className="dropdown dropdown-end menu-dropdown-toggle mx-3 md:mx-6">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-8 md:w-10 rounded-full">
                 <img
