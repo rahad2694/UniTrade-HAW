@@ -5,6 +5,7 @@ import React from "react";
 import { LeadType } from "./DashBoard";
 import { useAuthState } from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
+import { Link } from "react-router-dom";
 
 interface Props {
   lead: LeadType;
@@ -33,11 +34,15 @@ const Lead: React.FC<Props> = ({
   return (
     <div className="flex justify-center ">
       <div className="rounded-lg shadow-lg bg-white max-w-sm lg:hover:scale-110 transition ease-in-out delay-300 hover:shadow-xl">
-        <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
+        <Link
+          to={`/post/${id}`}
+          data-mdb-ripple="true"
+          data-mdb-ripple-color="light"
+        >
           <div className="w-80 h-72 overflow-hidden">
             <img className="w-full h-full object-cover" src={img} alt="" />
           </div>
-        </a>
+        </Link>
         <div className="p-6">
           <h5 className="text-2xl font-bold mb-3">
             {leadTitle?.slice(0, 30) ?? "No Title"}

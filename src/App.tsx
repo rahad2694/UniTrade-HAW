@@ -10,6 +10,7 @@ import DashBoard from "./components/DashBoard/DashBoard";
 import Home from "./components/Home/Home";
 import Profile from "./components/Profile/Profile";
 import EditUserInfo from "./components/Profile/EditUserInfo";
+import PostDetails from "./components/DashBoard/PostDetails";
 
 function App() {
   return (
@@ -20,7 +21,8 @@ function App() {
         <Route path="/login" element={<Login></Login>}></Route>
         <Route path="/signup" element={<SignUp></SignUp>}></Route>
         <Route path="/profile" element={<Profile></Profile>}></Route>
-          <Route path="/edit-user-info" element={<EditUserInfo />} />
+        <Route path="/post/:id" element={<PostDetails />} />
+        <Route path="/edit-user-info" element={<EditUserInfo />} />
         <Route
           path="/dashboard"
           element={

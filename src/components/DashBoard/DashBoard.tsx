@@ -15,6 +15,7 @@ export interface LeadType {
   imageUrls: string[];
   createdAt?: string;
   lastUpdatedAt?: string;
+  likes: string[];
 }
 interface Props {
   prop?: string;
