@@ -14,29 +14,32 @@ const Navbar: React.FC<Props> = () => {
   return (
     <div className="navbar bg-base-100 sticky top-0 z-50">
       <div className="flex-1">
-        <Link to="/" className="btn btn-ghost normal-case text-xl ml-3">
+        <Link
+          to="/"
+          className="btn btn-ghost normal-case text-base md:text-xl md:ml-3"
+        >
           UniTrade
         </Link>
       </div>
       <div className="flex-none">
         <Link
-          className="mx-2 p-3 rounded-lg hover:bg-base-300 transition delay-100 duration-200 ease-in-out"
+          className="mx-1 p-1 md:mx-2 md:p-3 text-sm md:text-base rounded-lg hover:bg-base-300 transition delay-100 duration-200 ease-in-out"
           to="/"
         >
           Home
         </Link>
         {user?.uid ? (
           <Link
-            className="mx-2 p-3 rounded-lg hover:bg-base-300 transition delay-100 duration-200 ease-in-out"
+            className="p-1 md:p-3 text-sm md:text-base rounded-lg hover:bg-base-300 transition delay-100 duration-200 ease-in-out"
             to="/dashboard"
           >
             Dashboard
           </Link>
         ) : null}
         {user?.uid ? (
-          <div className="dropdown dropdown-end mx-6">
+          <div className="dropdown dropdown-end mx-3 md:mx-6">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full">
+              <div className="w-8 md:w-10 rounded-full">
                 <img
                   alt=""
                   src={
@@ -48,15 +51,15 @@ const Navbar: React.FC<Props> = () => {
             </label>
             <ul
               tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-36 md:w-52"
             >
               <li>
-                  <Link to="/profile">
-                      <button className="justify-between">
-                          Profile
-                          <span className="badge">New</span>
-                      </button>
-                  </Link>
+                <Link to="/profile">
+                  <button className="justify-between">
+                    Profile
+                    <span className="badge">New</span>
+                  </button>
+                </Link>
               </li>
               <li>
                 <button
