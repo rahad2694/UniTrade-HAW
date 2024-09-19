@@ -30,17 +30,17 @@ const AddToDo: React.FC<Props> = ({ handleClose, handleRefetch, lead }) => {
     const lastUpdatedAt = createdAt;
 
     // const imageUrl = await handleImageUpload();
+    const imageUrls = lead?.imageUrls ?? [];
+    if (uploadedImage) {
+      imageUrls.push(uploadedImage);
+    }
     const data = {
       leadTitle,
       content,
       createdAt,
       lastUpdatedAt,
       userEmail: user?.email,
-      imageUrls: uploadedImage
-        ? lead?.imageUrls
-          ? lead?.imageUrls.push(uploadedImage)
-          : [uploadedImage]
-        : lead?.imageUrls,
+      imageUrls: imageUrls,
     };
     const url = `https://unitrade-hawserver-production.up.railway.app/leads/${
       lead ? "update/" + lead.id : "create-lead"
