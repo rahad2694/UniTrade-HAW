@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuthState } from "react-firebase-hooks/auth";
 import auth from "../../firebase.init";
@@ -10,6 +10,9 @@ interface Props {
 }
 
 const Navbar: React.FC<Props> = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || "/";
   const [user] = useAuthState(auth);
   return (
     <div className="navbar bg-base-100 sticky top-0 z-50">
@@ -66,6 +69,7 @@ const Navbar: React.FC<Props> = () => {
                   onClick={() => {
                     signOut(auth);
                     toast.success("Successfully Logged Out", { id: "logout" });
+                    navigate(from, { replace: true });
                   }}
                 >
                   Logout

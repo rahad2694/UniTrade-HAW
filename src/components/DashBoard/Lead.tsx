@@ -39,7 +39,7 @@ const Lead: React.FC<Props> = ({
           data-mdb-ripple="true"
           data-mdb-ripple-color="light"
         >
-          <div className="w-80 h-72 overflow-hidden">
+          <div className="w-80 h-72 overflow-hidden mx-auto">
             <img className="w-full h-full object-cover" src={img} alt="" />
           </div>
         </Link>
