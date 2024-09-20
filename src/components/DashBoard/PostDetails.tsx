@@ -185,7 +185,9 @@ const PostDetails: React.FC = () => {
           <button
             onClick={handleLike}
             className={`btn text-white ${
-              liked ? "bg-green-500" : "bg-blue-500"
+              liked
+                ? "bg-green-500 hover:bg-green-500"
+                : "bg-blue-500 hover:bg-green-500"
             }`}
           >
             <FontAwesomeIcon icon={faThumbsUp} />
