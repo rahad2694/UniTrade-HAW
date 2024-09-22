@@ -19,7 +19,6 @@ UniTrade is a collaborative platform designed exclusively for students, enabling
 
 **Tailwind CSS:** Utility-first CSS framework for rapid UI development.
 
-**Material UI:** Modern and customizable React components for a consistent and professional design.
 
 **Firebase:** Integration for real-time data handling and authentication with secure user management.
 
